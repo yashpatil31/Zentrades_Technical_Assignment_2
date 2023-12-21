@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        select{
+            height: 15rem;
+        }
+    </style>
+  </head>
+  <body class="container">
+    <div class="mt-5  d-flex">
+        <div class="w-100">
+            <select id="available-fields" class="form-select" multiple>
+            </select>
+        </div>
+
+        <div class="d-flex flex-column align-items-center justify-content-evenly" style="width:2rem">
+            <button onclick="moveSelectedOptions('available-fields', 'displayed-fields')">>></button>
+            <button onclick="moveSelectedOptions('displayed-fields', 'available-fields')"><<</button>
+        </div>
+
+        <div class="w-100">
+            <select id="displayed-fields" class="form-select" multiple>
+            </select>
+        </div>
+    </div>
+    <div class="my-4 text-end">
+        <button class="btn btn-success" onclick="displayData()">Next</button>
+        <button class="btn btn-light">Cancel</button>
+    </div>
+    <div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr id="outputHeads">
+                    </tr>
+                </thead>
+                <tbody id="outputRows">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const data = JSON.parse(localStorage.getItem("data"));
+        const options = document.getElementById("available-fields")
+
+        if(data) {
+            data.columnList.forEach((column) => {
+                const option = document.createElement("option")
+                option.value = column;
+                option.innerText = column;
+
+                options.appendChild(option)
+            })
+        }
+        
+        function displayData() {
+            const outputHead = document.getElementById("outputHeads")
+            outputHead.innerHTML = "";
+            const outputRows = document.getElementById("outputRows")
+            outputRows.innerHTML = "";
+
+            const selectedColumns = document.getElementById("displayed-fields").querySelectorAll("option")
+            // update header output
+            selectedColumns.forEach(column => {
+                console.log(column.innerText)
+                const th = document.createElement("th")
+                th.innerText = column.innerText;
+
+                outputHead.appendChild(th)
+            })
+
+            // update rowsData
+            Object.values(data.products).forEach(product => {
+                let row = document.createElement("tr");
+                selectedColumns.forEach((column)=>{
+                    row.innerHTML += `<td>${product[column.innerText]}</td>`
+                })
+                outputRows.appendChild(row)
+            })
+            loader.classList.add("d-none")
+
+        }
+
+
+        function moveSelectedOptions(sourceId, destinationId) {
+            const sourceList = document.getElementById(sourceId);
+            const destinationList = document.getElementById(destinationId);
+
+            // Move selected options from source to destination
+            Array.from(sourceList.selectedOptions).forEach(option => {
+                destinationList.appendChild(option);
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>
