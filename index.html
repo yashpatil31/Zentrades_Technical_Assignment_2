@@ -18,8 +18,14 @@
       <br />
       <input type="file" id="file" name="file" accept=".csv, .json" />
       <p class="mt-2">Supported file Type(s) .csv, .json</p>
+      <button id="nextBtn" class="btn btn-success">Next</button>
     </div>
     <script>
+
+        document.getElementById("nextBtn").onclick = function () {
+            location.href = "./selectColumns.html";
+        };
+
       const forminputElement = document.getElementById("file");
       forminputElement.addEventListener("change", handleFiles, false);
 
